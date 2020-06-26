@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="9.6.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="9.6.000" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="retrieve" compatibility="9.6.000" expanded="true" height="68" name="Retrieve Alzheimer_TP" width="90" x="45" y="85">
+        <parameter key="repository_entry" value="//Local Repository/Alzheimer_TP"/>
+      </operator>
+      <operator activated="true" class="replace" compatibility="9.6.000" expanded="true" height="82" name="Converted para Demented" width="90" x="179" y="85">
+        <parameter key="attribute_filter_type" value="all"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="nominal"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="file_path"/>
+        <parameter key="block_type" value="single_value"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="single_value"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="replace_what" value="Converted"/>
+        <parameter key="replace_by" value="Demented"/>
+      </operator>
+      <operator activated="true" class="replace_missing_values" compatibility="9.6.000" expanded="true" height="103" name="Replace Missing Values" width="90" x="313" y="85">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="all"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="default" value="average"/>
+        <list key="columns">
+          <parameter key="SES" value="average"/>
+          <parameter key="MMSE" value="average"/>
+        </list>
+      </operator>
+      <operator activated="true" class="nominal_to_numerical" compatibility="9.6.000" expanded="true" height="103" name="Target para 0 ou 1 bem como M/F" width="90" x="447" y="85">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value="Group"/>
+        <parameter key="attributes" value="M/F|Group"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="nominal"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="file_path"/>
+        <parameter key="block_type" value="single_value"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="single_value"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="coding_type" value="unique integers"/>
+        <parameter key="use_comparison_groups" value="false"/>
+        <list key="comparison_groups"/>
+        <parameter key="unexpected_value_handling" value="all 0 and warning"/>
+        <parameter key="use_underscore_in_name" value="false"/>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="9.6.000" expanded="true" height="82" name="Remove id's, hand, visit e M/F" width="90" x="581" y="85">
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="Age|ASF|CDR|EDUC|eTIV|Group|MMSE|MR Delay|nWBV|SES"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+      </operator>
+      <operator activated="true" class="detect_outlier_distances" compatibility="9.6.000" expanded="true" height="82" name="Detetar instâncias com otuliers" width="90" x="581" y="238">
+        <parameter key="number_of_neighbors" value="10"/>
+        <parameter key="number_of_outliers" value="50"/>
+        <parameter key="distance_function" value="euclidian distance"/>
+      </operator>
+      <operator activated="true" class="filter_examples" compatibility="9.6.000" expanded="true" height="103" name="Ficar apenas com instâncias sem outliers" width="90" x="715" y="238">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="custom_filters"/>
+        <parameter key="invert_filter" value="false"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="outlier.equals.false"/>
+        </list>
+        <parameter key="filters_logic_and" value="true"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="9.6.000" expanded="true" height="82" name="Remover atributo otulier" width="90" x="849" y="238">
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="Age|ASF|CDR|EDUC|eTIV|MMSE|MR Delay|nWBV|Group|SES"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="true"/>
+      </operator>
+      <connect from_op="Retrieve Alzheimer_TP" from_port="output" to_op="Converted para Demented" to_port="example set input"/>
+      <connect from_op="Converted para Demented" from_port="example set output" to_op="Replace Missing Values" to_port="example set input"/>
+      <connect from_op="Replace Missing Values" from_port="example set output" to_op="Target para 0 ou 1 bem como M/F" to_port="example set input"/>
+      <connect from_op="Target para 0 ou 1 bem como M/F" from_port="example set output" to_op="Remove id's, hand, visit e M/F" to_port="example set input"/>
+      <connect from_op="Remove id's, hand, visit e M/F" from_port="example set output" to_op="Detetar instâncias com otuliers" to_port="example set input"/>
+      <connect from_op="Detetar instâncias com otuliers" from_port="example set output" to_op="Ficar apenas com instâncias sem outliers" to_port="example set input"/>
+      <connect from_op="Ficar apenas com instâncias sem outliers" from_port="example set output" to_op="Remover atributo otulier" to_port="example set input"/>
+      <connect from_op="Remover atributo otulier" from_port="example set output" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>
