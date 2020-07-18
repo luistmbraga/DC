@@ -5,4 +5,4 @@ Repositório para o trabalho prático de Descoberta de Conhecimento
 
 ### Trabalho Prático: 17,8 valores
 
-### Fichas: 4 de 4
+### Fichas: 20 valores
